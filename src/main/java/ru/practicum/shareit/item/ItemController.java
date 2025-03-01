@@ -8,7 +8,6 @@ import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemGetDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
