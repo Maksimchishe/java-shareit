@@ -11,12 +11,12 @@ import lombok.NonNull;
  */
 @Data
 @NoArgsConstructor
-public class UserDto {
+public class UserGetDto {
     @NonNull
-    Long id;
+    private Long id;
     @NotBlank(message = "Имя или логин пользователя не может быть пустым.")
-    String name;
+    private String name;
     @NotBlank(message = "email не может быть пустым.")
     @Email(regexp = "^[\\w-.]+@[\\w-]+(\\.[\\w-]+)*\\.[a-z]{2,}$", message = "Некорректный формат email.")
-    String email;
+    private String email;
 }

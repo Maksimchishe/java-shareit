@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserStorage;
+import ru.practicum.shareit.user.UserRepository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,9 +12,9 @@ import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
-public class ItemRepository implements ItemStorage {
+public class ItemRepository {
 
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
 
     private long id;
     private final Map<Long, Item> itemMap = new HashMap<>();
@@ -23,12 +23,10 @@ public class ItemRepository implements ItemStorage {
         return id++;
     }
 
-    @Override
     public List<Item> getItems() {
         return itemMap.values().stream().toList();
     }
 
-    @Override
     public Item getItemById(long id) {
         if (!itemMap.containsKey(id)) {
             throw new NotFoundException("Вещь не найдена.");
@@ -36,9 +34,8 @@ public class ItemRepository implements ItemStorage {
         return itemMap.get(id);
     }
 
-    @Override
     public Item createItem(Item item, long userId) {
-        userStorage.getUserById(userId);
+        userRepository.getUserById(userId);
         long id = nextId();
         item.setId(id);
         item.setOwner(userId);
@@ -46,9 +43,8 @@ public class ItemRepository implements ItemStorage {
         return itemMap.get(id);
     }
 
-    @Override
     public Item updateItem(Item item, long id, long userId) {
-        userStorage.getUserById(userId);
+        userRepository.getUserById(userId);
         Item updateItem = getItemById(id);
 
         if (item.getName() != null) {
@@ -62,13 +58,11 @@ public class ItemRepository implements ItemStorage {
         return itemMap.get(id);
     }
 
-    @Override
     public void deleteItem(long id) {
         getItemById(id);
         itemMap.remove(id);
     }
 
-    @Override
     public List<Item> getSearchItem(String text) {
         return itemMap.values().stream()
                 .filter(Item::isAvailable)

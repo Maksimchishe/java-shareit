@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.model.Request;
 
 /**
  * TODO Sprint add-controllers.
@@ -12,14 +12,14 @@ import ru.practicum.shareit.request.model.ItemRequest;
 @Data
 @NoArgsConstructor
 public class ItemGetDto {
-    long id; // — уникальный идентификатор вещи;
+    private long id;
     @NotBlank
-    String name; // — краткое название;
+    private String name;
     @NotBlank
-    String description; // — развёрнутое описание;
+    private String description;
     @NotNull
-    Boolean available; // — статус о том, доступна или нет вещь для аренды;
-    Long owner;
-    ItemRequest request;
+    private Boolean available;
+    private Long owner;
+    private Request request;
 }
 

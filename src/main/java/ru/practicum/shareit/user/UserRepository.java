@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class UserRepository implements UserStorage {
+public class UserRepository {
 
     private long id;
     private final Map<Long, User> userMap = new HashMap<>();
@@ -19,12 +19,10 @@ public class UserRepository implements UserStorage {
         return id++;
     }
 
-    @Override
     public List<User> getUsers() {
         return userMap.values().stream().toList();
     }
 
-    @Override
     public User getUserById(long id) {
         if (!userMap.containsKey(id)) {
             throw new NotFoundException("Пользователь не найден.");
@@ -32,7 +30,6 @@ public class UserRepository implements UserStorage {
         return userMap.get(id);
     }
 
-    @Override
     public User createUser(User user) {
         if (userMap.values().stream()
                 .anyMatch(u -> u.getEmail().equals(user.getEmail()))) {
@@ -45,7 +42,6 @@ public class UserRepository implements UserStorage {
         return userMap.get(id);
     }
 
-    @Override
     public User updateUser(User user, long id) {
         User updateUser = getUserById(id);
         if (user.getName() != null) {
@@ -62,7 +58,6 @@ public class UserRepository implements UserStorage {
         return userMap.get(id);
     }
 
-    @Override
     public void deleteUser(long id) {
         getUserById(id);
         userMap.remove(id);

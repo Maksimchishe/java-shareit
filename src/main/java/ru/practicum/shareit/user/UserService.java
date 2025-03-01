@@ -2,9 +2,10 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.dto.UserCreateDto;
+import ru.practicum.shareit.user.dto.UserGetDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
+import ru.practicum.shareit.user.model.UserMapper;
 
 import java.util.List;
 
@@ -12,28 +13,28 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
 
-    public List<UserDto> getUsers() {
-        return userStorage.getUsers().stream()
-                .map(UserMapper::toUserDto)
+    public List<UserGetDto> getUsers() {
+        return userRepository.getUsers().stream()
+                .map(UserMapper.INSTANCE::userToGetDto)
                 .toList();
     }
 
-    public UserDto getUserById(long id) {
-        return UserMapper.toUserDto(userStorage.getUserById(id));
+    public UserGetDto getUserById(long id) {
+        return UserMapper.INSTANCE.userToGetDto(userRepository.getUserById(id));
     }
 
-    public UserDto createUser(UserDto userDto) {
-        return UserMapper.toUserDto(userStorage.createUser(UserMapper.createDtoToUser(userDto)));
+    public UserGetDto createUser(UserCreateDto userCreateDto) {
+        return UserMapper.INSTANCE.userToGetDto(userRepository.createUser(UserMapper.INSTANCE.createDtoToUser(userCreateDto)));
     }
 
-    public UserDto updateUser(UserUpdateDto userUpdateDto, long id) {
-        return UserMapper.toUserDto(userStorage.updateUser(UserMapper.updateDtoToUser(userUpdateDto), id));
+    public UserGetDto updateUser(UserUpdateDto userUpdateDto, long id) {
+        return UserMapper.INSTANCE.userToGetDto(userRepository.updateUser(UserMapper.INSTANCE.updateDtoToUser(userUpdateDto), id));
     }
 
     public void deleteUser(long id) {
-        userStorage.deleteUser(id);
+        userRepository.deleteUser(id);
     }
 
 }

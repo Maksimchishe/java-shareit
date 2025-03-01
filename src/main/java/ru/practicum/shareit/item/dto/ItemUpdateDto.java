@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ItemUpdateDto {
-    long id; // — уникальный идентификатор вещи;
-    String name; // — краткое название;
-    String description; // — развёрнутое описание;
-    Boolean available; // — статус о том, доступна или нет вещь для аренды;
+    private long id;
+    private String name;
+    private String description;
+    private Boolean available;
 }
 

@@ -19,7 +19,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ItemController {
 
-    final ItemService itemService;
+    private final ItemService itemService;
 
     @GetMapping
     public Set<ItemGetDto> getItems(@RequestHeader("X-Sharer-User-Id") long userId) {
@@ -51,9 +51,6 @@ public class ItemController {
 
     @GetMapping("/search")
     public Set<ItemGetDto> getSearchItem(@RequestParam() String text) {
-        if (text.isEmpty()) {
-            return new HashSet<>();
-        }
         return itemService.getSearchItem(text);
     }
 }

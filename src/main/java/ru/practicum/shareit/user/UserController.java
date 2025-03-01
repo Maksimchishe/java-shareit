@@ -4,7 +4,8 @@ import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserCreateDto;
+import ru.practicum.shareit.user.dto.UserGetDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
 
 import java.util.List;
@@ -17,25 +18,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    final UserService userService;
+    private final UserService userService;
 
     @GetMapping
-    public List<UserDto> getUsers() {
+    public List<UserGetDto> getUsers() {
         return userService.getUsers();
     }
 
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable long id) {
+    public UserGetDto getUserById(@PathVariable long id) {
         return userService.getUserById(id);
     }
 
     @PostMapping
-    public UserDto createUser(@RequestBody @Valid UserDto userDto) {
-        return userService.createUser(userDto);
+    public UserGetDto createUser(@RequestBody @Valid UserCreateDto userCreateDto) {
+        return userService.createUser(userCreateDto);
     }
 
     @PatchMapping("/{id}")
-    public UserDto updateUser(@RequestBody @Valid UserUpdateDto userUpdateDto, @PathVariable @Valid @NonNull Long id) {
+    public UserGetDto updateUser(@RequestBody @Valid UserUpdateDto userUpdateDto, @PathVariable @Valid @NonNull Long id) {
         return userService.updateUser(userUpdateDto, id);
     }
 
