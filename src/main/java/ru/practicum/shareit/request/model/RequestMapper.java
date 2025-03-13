@@ -4,7 +4,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import ru.practicum.shareit.request.dto.RequestCreateDto;
 import ru.practicum.shareit.request.dto.RequestGetDto;
-import ru.practicum.shareit.request.dto.RequestUpdateDto;
 
 @Mapper
 public interface RequestMapper {
@@ -13,6 +12,4 @@ public interface RequestMapper {
     RequestGetDto requestToGetDto(Request request);
 
     Request createToRequestDto(RequestCreateDto requestCreateDto);
-
-    Request updateToRequestDto(RequestUpdateDto requestUpdateDto);
 }

@@ -10,9 +10,9 @@ import ru.practicum.shareit.item.dto.ItemUpdateDto;
 public interface ItemMapper {
     ItemMapper INSTANCE = Mappers.getMapper(ItemMapper.class);
 
-    ItemGetDto itemToItemGetDto(Item item);
+    ItemGetDto itemToGetDto(Item item);
 
-    Item itemToItemCreateDto(ItemCreateDto itemCreateDto);
+    Item itemToCreateDto(ItemCreateDto itemCreateDto);
 
-    Item itemToItemUpdateDto(ItemUpdateDto itemUpdateDto);
+    Item itemToUpdateDto(ItemUpdateDto itemUpdateDto);
 }

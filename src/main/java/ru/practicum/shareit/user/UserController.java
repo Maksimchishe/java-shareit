@@ -14,25 +14,25 @@ import java.util.List;
  * TODO Sprint add-controllers.
  */
 @RestController
-@RequestMapping(path = "/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping
-    public List<UserGetDto> getUsers() {
-        return userService.getUsers();
+    public List<UserGetDto> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
-    public UserGetDto getUserById(@PathVariable long id) {
+    public UserGetDto getReferenceById(@PathVariable(name = "id") long id) {
         return userService.getUserById(id);
     }
 
     @PostMapping
-    public UserGetDto createUser(@RequestBody @Valid UserCreateDto userCreateDto) {
-        return userService.createUser(userCreateDto);
+    public UserGetDto saveUser(@RequestBody @Valid UserCreateDto userCreateDto) {
+        return userService.saveUser(userCreateDto);
     }
 
     @PatchMapping("/{id}")
@@ -41,9 +41,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(Long id) {
-        if (id != null) {
-            userService.deleteUser(id);
-        }
+    public void deleteById(@PathVariable @Valid @NonNull Long id) {
+        userService.deleteById(id);
     }
 }

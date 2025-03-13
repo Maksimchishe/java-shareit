@@ -4,17 +4,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 /**
  * TODO Sprint add-controllers.
  */
 @Getter
 @Setter
 @NoArgsConstructor
-public class ItemUpdateDto {
-    private String name;
-    private String description;
-    private Boolean available;
-    private Long owner;
-    private Long request;
+public class CommentGetDto {
+    private long id;
+    private String text;
+    private String authorName;
+    private LocalDateTime created;
 }
-

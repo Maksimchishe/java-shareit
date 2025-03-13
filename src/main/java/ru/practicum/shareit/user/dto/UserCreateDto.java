@@ -2,18 +2,15 @@ package ru.practicum.shareit.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 /**
  * TODO Sprint add-controllers.
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class UserCreateDto {
-    @NonNull
-    private Long id;
     @NotBlank(message = "Имя или логин пользователя не может быть пустым.")
     private String name;
     @NotBlank(message = "email не может быть пустым.")
