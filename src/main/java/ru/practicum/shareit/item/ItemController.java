@@ -4,15 +4,10 @@ import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemCreateDto;
-import ru.practicum.shareit.item.dto.ItemGetDto;
-import ru.practicum.shareit.item.dto.ItemUpdateDto;
+import ru.practicum.shareit.item.dto.*;
 
-import java.util.Set;
+import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
@@ -21,19 +16,20 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public Set<ItemGetDto> getItems(@RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.getItems(userId);
+    public List<ItemGetDto> findAll(@RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemService.findAll(userId);
     }
 
     @GetMapping("/{id}")
-    public ItemGetDto getItemById(@PathVariable long id) {
-        return itemService.getItemById(id);
+    public ItemGetDto getItemById(@PathVariable long id,
+                                  @RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemService.getItemById(id, userId);
     }
 
     @PostMapping
-    public ItemGetDto createItem(@RequestBody @Valid ItemCreateDto itemCreateDto,
-                                 @RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.createItem(itemCreateDto, userId);
+    public ItemGetDto saveItem(@RequestBody @Valid ItemCreateDto itemCreateDto,
+                               @RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemService.saveItem(itemCreateDto, userId);
     }
 
     @PatchMapping("/{id}")
@@ -44,12 +40,19 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteItem(@Valid @NonNull Long id) {
-        itemService.deleteItem(id);
+    public void deleteById(@Valid @NonNull Long id) {
+        itemService.deleteById(id);
     }
 
     @GetMapping("/search")
-    public Set<ItemGetDto> getSearchItem(@RequestParam() String text) {
-        return itemService.getSearchItem(text);
+    public List<ItemGetDto> search(@RequestParam String text) {
+        return itemService.search(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentGetDto saveComment(@PathVariable long itemId,
+                                     @RequestBody CommentCreateDto commentCreateDto,
+                                     @RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemService.saveComment(itemId, commentCreateDto, userId);
     }
 }

@@ -1,25 +1,24 @@
 package ru.practicum.shareit.item.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.request.model.Request;
+import lombok.Setter;
+import ru.practicum.shareit.booking.dto.BookingGetSimplifiedDTO;
 
-/**
- * TODO Sprint add-controllers.
- */
-@Data
+import java.util.List;
+
+@Getter
+@Setter
 @NoArgsConstructor
 public class ItemGetDto {
     private long id;
-    @NotBlank
     private String name;
-    @NotBlank
     private String description;
-    @NotNull
-    private Boolean available;
-    private Long owner;
-    private Request request;
+    private boolean available;
+    private long owner;
+    private long request;
+    private List<CommentGetDto> comments;
+    private BookingGetSimplifiedDTO lastBooking;
+    private BookingGetSimplifiedDTO nextBooking;
 }
 
