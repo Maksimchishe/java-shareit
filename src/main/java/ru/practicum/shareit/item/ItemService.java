@@ -4,7 +4,7 @@ import ru.practicum.shareit.item.dto.*;
 
 import java.util.List;
 
-interface ItemService {
+public interface ItemService {
 
     List<ItemGetDto> findAll(long userId);
 

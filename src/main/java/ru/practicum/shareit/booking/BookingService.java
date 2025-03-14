@@ -5,7 +5,7 @@ import ru.practicum.shareit.booking.dto.BookingGetDto;
 
 import java.util.List;
 
-interface BookingService {
+public interface BookingService {
 
     List<BookingGetDto> findAll();
 

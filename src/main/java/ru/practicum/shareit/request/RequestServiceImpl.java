@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class RequestServiceImpl implements RequestService {
+class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
     private final RequestMapper requestMapper;

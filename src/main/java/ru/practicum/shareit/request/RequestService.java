@@ -3,6 +3,6 @@ package ru.practicum.shareit.request;
 import ru.practicum.shareit.request.dto.RequestCreateDto;
 import ru.practicum.shareit.request.dto.RequestGetDto;
 
-interface RequestService {
+public interface RequestService {
     RequestGetDto saveRequest(RequestCreateDto requestCreateDto, long userId);
 }
