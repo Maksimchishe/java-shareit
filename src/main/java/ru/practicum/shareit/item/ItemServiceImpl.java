@@ -23,18 +23,21 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-class ItemServiceImpl implements ItemService {
+public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemMapper itemMapper;
+    private final CommentMapper commentMapper;
+    private final BookingMapper bookingMapper;
 
     @Override
     public List<ItemGetDto> findAll(long userId) {
-        userRepository.getUserById(userId);
+        userRepository.existsUserById(userId);
         return itemRepository.findAll().stream()
                 .filter(i -> i.getOwner() == userId)
-                .map(ItemMapper.INSTANCE::itemToGetDto)
+                .map(itemMapper::itemToGetDto)
                 .sorted(Comparator.comparing(ItemGetDto::getId))
                 .toList();
     }
@@ -42,14 +45,14 @@ class ItemServiceImpl implements ItemService {
     @Override
     public ItemGetDto getItemById(long id, long userId) {
         Item item = itemRepository.getItemById(id);
-        ItemGetDto itemGetDto = ItemMapper.INSTANCE.itemToGetDto(item);
+        ItemGetDto itemGetDto = itemMapper.itemToGetDto(item);
 
         if (item.getOwner() == userId) {
             setBooking(itemGetDto, id);
         }
 
         itemGetDto.setComments(commentRepository.findAllByItemId(id).stream()
-                .map(CommentMapper.INSTANCE::commentToGetDto)
+                .map(commentMapper::commentToGetDto)
                 .toList());
         return itemGetDto;
     }
@@ -57,22 +60,21 @@ class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemGetDto saveItem(ItemCreateDto itemCreateDto, long userId) {
-        userRepository.getUserById(userId);
+        userRepository.existsUserById(userId);
         itemCreateDto.setOwner(userId);
-        return ItemMapper.INSTANCE.itemToGetDto(
-                itemRepository.save(ItemMapper.INSTANCE.itemToCreateDto(itemCreateDto)));
+        return itemMapper.itemToGetDto(
+                itemRepository.save(itemMapper.itemToCreateDto(itemCreateDto)));
     }
 
     @Override
     @Transactional
     public ItemGetDto updateItem(ItemUpdateDto itemUpdateDto, long id, long userId) {
-        userRepository.getUserById(userId);
-        itemRepository.getItemById(id);
-        return ItemMapper.INSTANCE.itemToGetDto(itemRepository.save(ItemMapper.INSTANCE.itemToUpdateDto(itemUpdateDto)));
+        userRepository.existsUserById(userId);
+        itemRepository.existsItemById(id);
+        return itemMapper.itemToGetDto(itemRepository.save(itemMapper.itemToUpdateDto(itemUpdateDto)));
     }
 
     @Override
-    @Transactional
     public void deleteById(long id) {
         itemRepository.deleteById(id);
     }
@@ -83,7 +85,7 @@ class ItemServiceImpl implements ItemService {
             return List.of();
         }
         return itemRepository.search(text).stream()
-                .map(ItemMapper.INSTANCE::itemToGetDto)
+                .map(itemMapper::itemToGetDto)
                 .sorted(Comparator.comparing(ItemGetDto::getId))
                 .toList();
     }
@@ -97,12 +99,12 @@ class ItemServiceImpl implements ItemService {
         if (bookingRepository.findAllByBookerAndItem(userId, itemId, LocalDateTime.now()).isEmpty()) {
             throw new ValidationException("Нет бронирования");
         } else {
-            Comment comment = CommentMapper.INSTANCE.commentToCreateDto(commentCreateDto);
+            Comment comment = commentMapper.commentToCreateDto(commentCreateDto);
             comment.setAuthor(user);
             comment.setItem(item);
             comment.setCreated(LocalDateTime.now());
 
-            CommentGetDto commentGetDto = CommentMapper.INSTANCE.commentToGetDto(commentRepository.save(comment));
+            CommentGetDto commentGetDto = commentMapper.commentToGetDto(commentRepository.save(comment));
             commentGetDto.setAuthorName(user.getName());
             return commentGetDto;
         }
@@ -112,7 +114,7 @@ class ItemServiceImpl implements ItemService {
         Optional<Booking> lastBooking = bookingRepository.findLastBooking(itemId, LocalDateTime.now());
         Optional<Booking> nextBooking = bookingRepository.findNextBooking(itemId, LocalDateTime.now());
 
-        lastBooking.ifPresent(booking -> itemGetDto.setLastBooking(BookingMapper.INSTANCE.bookingToSimpleDto(booking)));
-        nextBooking.ifPresent(booking -> itemGetDto.setNextBooking(BookingMapper.INSTANCE.bookingToSimpleDto(booking)));
+        lastBooking.ifPresent(booking -> itemGetDto.setLastBooking(bookingMapper.bookingToSimpleDto(booking)));
+        nextBooking.ifPresent(booking -> itemGetDto.setNextBooking(bookingMapper.bookingToSimpleDto(booking)));
     }
 }

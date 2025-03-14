@@ -11,9 +11,6 @@ import ru.practicum.shareit.user.model.User;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
-/**
- * TODO Sprint add-bookings.
- */
 @Entity
 @Table(name = "bookings", schema = "public")
 @Getter

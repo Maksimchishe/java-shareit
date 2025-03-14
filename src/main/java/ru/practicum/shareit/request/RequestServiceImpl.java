@@ -15,18 +15,19 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-class RequestServiceImpl implements RequestService {
+public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
+    private final RequestMapper requestMapper;
 
     @Override
     @Transactional
     public RequestGetDto saveRequest(RequestCreateDto requestCreateDto, long userId) {
         User user = userRepository.getUserById(userId);
-        Request request = RequestMapper.INSTANCE.createToRequestDto(requestCreateDto);
+        Request request = requestMapper.createToRequestDto(requestCreateDto);
         request.setCreated(LocalDateTime.now());
         request.setRequester(user);
 
-        return RequestMapper.INSTANCE.requestToGetDto(requestRepository.save(request));
+        return requestMapper.requestToGetDto(requestRepository.save(request));
     }
 }

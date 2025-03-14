@@ -6,9 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.RequestCreateDto;
 import ru.practicum.shareit.request.dto.RequestGetDto;
 
-/**
- * TODO Sprint add-item-requests.
- */
 @RestController
 @RequestMapping("/requests")
 @RequiredArgsConstructor

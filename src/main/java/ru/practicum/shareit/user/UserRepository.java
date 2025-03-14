@@ -9,4 +9,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     default User getUserById(long id) {
         return findById(id).orElseThrow(() -> new NotFoundException("User не найден."));
     }
+
+    default void existsUserById(long id) {
+        if (!existsById(id)) {
+            throw new NotFoundException("User не найден.");
+        }
+    }
 }

@@ -15,27 +15,28 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository repository;
+    private final UserMapper userMapper;
 
     @Override
     public List<UserGetDto> getAllUsers() {
         return repository.findAll().stream()
-                .map(UserMapper.INSTANCE::userToGetDto)
+                .map(userMapper::userToGetDto)
                 .sorted(Comparator.comparing(UserGetDto::getId))
                 .toList();
     }
 
     @Override
     public UserGetDto getUserById(long id) {
-        return UserMapper.INSTANCE.userToGetDto(repository.getUserById(id));
+        return userMapper.userToGetDto(repository.getUserById(id));
     }
 
     @Override
     @Transactional
     public UserGetDto saveUser(UserCreateDto userCreateDto) {
-        return UserMapper.INSTANCE.userToGetDto(
-                repository.save(UserMapper.INSTANCE.createDtoToUser(userCreateDto)));
+        return userMapper.userToGetDto(
+                repository.save(userMapper.createDtoToUser(userCreateDto)));
     }
 
     @Override
@@ -48,12 +49,11 @@ class UserServiceImpl implements UserService {
         if (userUpdateDto.getEmail() != null) {
             user.setEmail(userUpdateDto.getEmail());
         }
-        return UserMapper.INSTANCE.userToGetDto(
+        return userMapper.userToGetDto(
                 repository.save(user));
     }
 
     @Override
-    @Transactional
     public void deleteById(long id) {
         repository.deleteById(id);
     }

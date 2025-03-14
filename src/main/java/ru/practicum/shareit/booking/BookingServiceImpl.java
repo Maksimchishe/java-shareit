@@ -20,16 +20,17 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-class BookingServiceImpl implements BookingService {
+public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final BookingMapper bookingMapper;
 
     @Override
     public List<BookingGetDto> findAll() {
         return bookingRepository.findAll().stream()
-                .map(BookingMapper.INSTANCE::bookingToGetDto)
+                .map(bookingMapper::bookingToGetDto)
                 .sorted(Comparator.comparing(BookingGetDto::getId).reversed())
                 .toList();
     }
@@ -41,7 +42,7 @@ class BookingServiceImpl implements BookingService {
 
         if (booking.getItem().getOwner() == user.getId()
             || booking.getBooker().getId() == user.getId()) {
-            return BookingMapper.INSTANCE.bookingToGetDto(booking);
+            return bookingMapper.bookingToGetDto(booking);
         } else {
             throw new NotFoundException("User не владелец и не заказчик Item");
         }
@@ -50,7 +51,7 @@ class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingGetDto saveBooking(BookingCreateDto bookingCreateDto, long userId) {
-        Booking booking = BookingMapper.INSTANCE.bookingToCreateDto(bookingCreateDto);
+        Booking booking = bookingMapper.bookingToCreateDto(bookingCreateDto);
         booking.setBooker(userRepository.getUserById(userId));
 
         Item item = itemRepository.getItemById(bookingCreateDto.getItemId());
@@ -60,7 +61,7 @@ class BookingServiceImpl implements BookingService {
         booking.setItem(item);
         booking.setStatus(BookingState.WAITING);
 
-        return BookingMapper.INSTANCE.bookingToGetDto(
+        return bookingMapper.bookingToGetDto(
                 bookingRepository.save(booking));
     }
 
@@ -87,6 +88,6 @@ class BookingServiceImpl implements BookingService {
         } else {
             throw new ValidationException("User не владелец и не заказчик Item");
         }
-        return BookingMapper.INSTANCE.bookingToGetDto(booking);
+        return bookingMapper.bookingToGetDto(booking);
     }
 }

@@ -7,9 +7,6 @@ import lombok.Setter;
 
 import java.time.Instant;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Entity
 @Table(name = "items", schema = "public")
 @Getter
