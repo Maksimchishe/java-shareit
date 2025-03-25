@@ -1,20 +1,17 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.request.model.Request;
+import lombok.Setter;
 
-/**
- * TODO Sprint add-controllers.
- */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class ItemUpdateDto {
-    private long id;
     private String name;
     private String description;
     private Boolean available;
-    private long owner;
-    private Request request;
+    private Long owner;
+    private Long request;
 }
 
