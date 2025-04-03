@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserGetDto updateUser(UserUpdateDto userUpdateDto, long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User не найден."));
-        if (userUpdateDto.getName() ==null && userUpdateDto.getEmail() == null) {
+        if (userUpdateDto.getName() == null && userUpdateDto.getEmail() == null) {
             throw new ValidationException("Отсутствуют данные для обновления.");
         }
         if (userUpdateDto.getName() != null) {
