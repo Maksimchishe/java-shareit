@@ -1,4 +1,4 @@
-package ru.practicum.shareit;
+package ru.practicum.shareit.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.user.UserController;
-import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserGetDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
@@ -101,7 +99,7 @@ class UserControllerTest {
         String userDTOJson = objectMapper.writeValueAsString(userGetDto1);
 
         when(userService.getUserById(FAKE_ID))
-                .thenThrow(new NotFoundException("User not found"));
+                .thenThrow(new NotFoundException("User не найден."));
 
         mvc.perform(get("/users/99999")
                         .content(userDTOJson)
@@ -195,7 +193,7 @@ class UserControllerTest {
 
     @Test
     void testDeleteFakeId() throws Exception {
-        Mockito.doThrow(new NotFoundException("User not found"))
+        Mockito.doThrow(new NotFoundException("User не найден."))
                 .when(userService).deleteById(FAKE_ID);
 
         mvc.perform(delete("/users/" + FAKE_ID)

@@ -1,4 +1,4 @@
-package ru.practicum.shareit;
+package ru.practicum.shareit.booking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,9 +9,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.booking.BookingController;
-import ru.practicum.shareit.booking.BookingService;
-import ru.practicum.shareit.booking.BookingState;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingGetDto;
 import ru.practicum.shareit.item.model.Item;
@@ -85,6 +82,22 @@ class BookingControllerTest {
                         .header("X-Sharer-User-Id", 1)
                         .queryParam("approved", "true"))
                 .andExpect(status().isOk())
+                .andExpect(content().json(bookingDTOJson));
+    }
+
+    @Test
+    void testGetFindAllBooking() throws Exception {
+        List<BookingGetDto> testList = new ArrayList<>(List.of(bookingGetDto1, bookingGetDto2));
+
+        String bookingDTOJson = objectMapper.writeValueAsString(testList);
+
+        when(bookingService.findAll())
+                .thenReturn(testList);
+
+        mvc.perform(get("/bookings")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(content().json(bookingDTOJson));
     }
 
