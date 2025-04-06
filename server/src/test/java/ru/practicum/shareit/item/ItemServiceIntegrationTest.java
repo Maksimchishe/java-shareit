@@ -7,12 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import ru.practicum.shareit.booking.BookingService;
+import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ItemServiceIntegrationTest {
     private final ItemService itemService;
     private final UserService userService;
+    private final BookingService bookingService;
 
     @Test
     void testAllItems() {
@@ -92,5 +96,10 @@ class ItemServiceIntegrationTest {
         final ValidationException exceptionComment = assertThrows(ValidationException.class,
                 () -> itemService.saveComment(1L, commentCreateDto, 1L));
         Assertions.assertEquals("Нет бронирования.", exceptionComment.getMessage());
+
+        BookingCreateDto bookingCreateDto = new BookingCreateDto(1L, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1));
+        bookingService.saveBooking(bookingCreateDto, 1L);
+        CommentGetDto commentGetDto = itemService.saveComment(1L, commentCreateDto, 1L);
+        Assertions.assertEquals("test", commentGetDto.getText());
     }
 }
