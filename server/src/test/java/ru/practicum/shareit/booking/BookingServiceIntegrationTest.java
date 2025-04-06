@@ -85,5 +85,14 @@ class BookingServiceIntegrationTest {
                 () -> bookingService.getAllByOwnerId(5L, "ALL"));
         Assertions.assertEquals("User не найден.", bookingGetDtoNotUser.getMessage());
 
+        BookingGetDto bookingGetAPPROVED = bookingService.approvedBooking(1L, true, 1L);
+        Assertions.assertEquals(BookingState.APPROVED, bookingGetAPPROVED.getStatus());
+
+        final ValidationException bookingGetIsAPPROVED = assertThrows(ValidationException.class,
+                () -> bookingService.approvedBooking(1L, true, 1L));
+        Assertions.assertEquals("Бронирование уже одобрено.", bookingGetIsAPPROVED.getMessage());
+
+        BookingGetDto bookingGetREJECTED = bookingService.approvedBooking(1L, false, 1L);
+        Assertions.assertEquals(BookingState.REJECTED, bookingGetREJECTED.getStatus());
     }
 }
