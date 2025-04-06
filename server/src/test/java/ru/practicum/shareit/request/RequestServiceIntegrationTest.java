@@ -8,6 +8,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.ItemService;
+import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.request.dto.RequestCreateDto;
 import ru.practicum.shareit.request.dto.RequestGetDto;
 import ru.practicum.shareit.user.UserService;
@@ -23,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class RequestServiceIntegrationTest {
     private final RequestService requestService;
+    private final ItemService itemService;
     private final UserService userService;
 
     @Test
@@ -49,6 +52,9 @@ class RequestServiceIntegrationTest {
         List<RequestGetDto> requestsByRequesterId = requestService.getRequestByRequesterId(1L);
         Assertions.assertEquals(1, requestsByRequesterId.size());
 
+        ItemCreateDto itemCreateDto = new ItemCreateDto("name", "description", true, 1L, 1L);
+        itemService.saveItem(itemCreateDto, 1L);
+        System.out.println(itemService.findAll(1L));
         final NotFoundException exceptionByRequesterId = assertThrows(NotFoundException.class,
                 () -> requestService.getRequestByRequesterId(99999L));
         Assertions.assertEquals("User не найден.", exceptionByRequesterId.getMessage());

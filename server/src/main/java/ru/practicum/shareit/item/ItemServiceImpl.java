@@ -47,6 +47,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemGetDto getItemById(long id, long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("User не найден.");
+        }
         Item item = itemRepository.findById(id).orElseThrow(() -> new NotFoundException("Item не найден."));
         ItemGetDto itemGetDto = itemMapper.itemToGetDto(item);
 
@@ -118,7 +121,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item не найден."));
         List<Booking> bookings = bookingRepository.findAllByBookerAndItem(userId, itemId, LocalDateTime.now());
         if (bookings.isEmpty()) {
-            throw new ValidationException("Нет бронирования");
+            throw new ValidationException("Нет бронирования.");
         } else {
             Comment comment = commentMapper.commentToCreateDto(commentCreateDto);
             comment.setAuthor(user);
