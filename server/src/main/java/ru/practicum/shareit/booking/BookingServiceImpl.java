@@ -74,7 +74,7 @@ public class BookingServiceImpl implements BookingService {
             case "REJECTED" -> bookingRepository.findAllByOwnerAndStatus(userId, BookingState.REJECTED).stream()
                     .map(bookingMapper::bookingToGetDto)
                     .toList();
-            default -> throw new ValidationException("Incorrect state");
+            default -> throw new ValidationException("Неправильный статус.");
         };
     }
 
