@@ -29,8 +29,6 @@ class BookingServiceIntegrationTest {
     private final UserService userService;
     private final ItemService itemService;
 
-    private final BookingRepository bookingRepository;
-
     @Test
     void testAllBookings() {
         UserCreateDto userCreateDto1 = new UserCreateDto("name1", "email1@email.email");
@@ -100,5 +98,9 @@ class BookingServiceIntegrationTest {
 
         BookingGetDto bookingGetREJECTED = bookingService.approvedBooking(1L, false, 1L);
         Assertions.assertEquals(BookingState.REJECTED, bookingGetREJECTED.getStatus());
+
+        bookingService.saveBooking(bookingCreateDto1, 2L);
+        BookingGetDto bookingGetCANCELED = bookingService.approvedBooking(2L, false, 2L);
+        Assertions.assertEquals(BookingState.CANCELED, bookingGetCANCELED.getStatus());
     }
 }
