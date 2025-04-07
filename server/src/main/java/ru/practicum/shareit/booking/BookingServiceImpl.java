@@ -55,27 +55,31 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("User не найден.");
         }
 
-        return switch (state) {
-            case "ALL" -> bookingRepository.findAllByItemOwnerOrderByStartDesc(userId).stream()
-                    .map(bookingMapper::bookingToGetDto)
-                    .toList();
-            case "CURRENT" -> bookingRepository.findAllByOwnerCurrentState(userId, LocalDateTime.now()).stream()
-                    .map(bookingMapper::bookingToGetDto)
-                    .toList();
-            case "PAST" -> bookingRepository.findAllByOwnerPastState(userId, LocalDateTime.now()).stream()
-                    .map(bookingMapper::bookingToGetDto)
-                    .toList();
-            case "FUTURE" -> bookingRepository.findAllByOwnerFutureState(userId, LocalDateTime.now()).stream()
-                    .map(bookingMapper::bookingToGetDto)
-                    .toList();
-            case "WAITING" -> bookingRepository.findAllByOwnerAndStatus(userId, BookingState.WAITING).stream()
-                    .map(bookingMapper::bookingToGetDto)
-                    .toList();
-            case "REJECTED" -> bookingRepository.findAllByOwnerAndStatus(userId, BookingState.REJECTED).stream()
-                    .map(bookingMapper::bookingToGetDto)
-                    .toList();
-            default -> throw new ValidationException("Неправильный статус.");
-        };
+        try {
+            return switch (BookingState.valueOf(state)) {
+                case ALL -> bookingRepository.findAllByItemOwnerOrderByStartDesc(userId).stream()
+                        .map(bookingMapper::bookingToGetDto)
+                        .toList();
+                case CURRENT -> bookingRepository.findAllByOwnerCurrentState(userId, LocalDateTime.now()).stream()
+                        .map(bookingMapper::bookingToGetDto)
+                        .toList();
+                case PAST -> bookingRepository.findAllByOwnerPastState(userId, LocalDateTime.now()).stream()
+                        .map(bookingMapper::bookingToGetDto)
+                        .toList();
+                case FUTURE -> bookingRepository.findAllByOwnerFutureState(userId, LocalDateTime.now()).stream()
+                        .map(bookingMapper::bookingToGetDto)
+                        .toList();
+                case WAITING -> bookingRepository.findAllByOwnerAndStatus(userId, BookingState.WAITING).stream()
+                        .map(bookingMapper::bookingToGetDto)
+                        .toList();
+                case REJECTED -> bookingRepository.findAllByOwnerAndStatus(userId, BookingState.REJECTED).stream()
+                        .map(bookingMapper::bookingToGetDto)
+                        .toList();
+                default -> throw new ValidationException("Неправильный статус.");
+            };
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Неправильный статус.");
+        }
     }
 
     @Override

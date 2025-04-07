@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.booking.model.Booking;
 
 import java.time.LocalDateTime;
@@ -13,57 +14,73 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("""
             SELECT all_booking
             FROM Booking AS all_booking
-            WHERE all_booking.booker.id = ?1
-            AND all_booking.item.id = ?2
-            AND all_booking.end < ?3
+            WHERE all_booking.booker.id = :userId
+            AND all_booking.item.id = :itemId
+            AND all_booking.end < :currentTime
             """)
-    List<Booking> findAllByBookerAndItem(long userId, long itemId, LocalDateTime currentTime);
+    List<Booking> findAllByBookerAndItem(@Param("userId") long userId,
+                                         @Param("itemId") long itemId,
+                                         @Param("currentTime") LocalDateTime currentTime);
 
     @Query("""
             SELECT booking
             FROM Booking AS booking
-            WHERE booking.item.id = ?1
-            AND booking.end < ?2
+            WHERE booking.item.id = :itemId
+            AND booking.end < :currentTime
             ORDER BY booking.start DESC
             """)
-    Optional<Booking> findLastBooking(long itemId, LocalDateTime currentTime);
+    Optional<Booking> findLastBooking(@Param("itemId") long itemId,
+                                      @Param("currentTime") LocalDateTime currentTime);
 
     @Query("""
             SELECT booking
             FROM Booking AS booking
-            WHERE booking.item.id = ?1
-            AND booking.start > ?2
+            WHERE booking.item.id = :itemId
+            AND booking.start > :currentTime
             ORDER BY booking.start
             """)
-    Optional<Booking> findNextBooking(long itemId, LocalDateTime currentTime);
+    Optional<Booking> findNextBooking(@Param("itemId") long itemId,
+                                      @Param("currentTime") LocalDateTime currentTime);
 
     List<Booking> findAllByItemOwnerOrderByStartDesc(long userId);
 
-    @Query("SELECT all_booking " +
-           "FROM Booking AS all_booking " +
-           "WHERE all_booking.item.owner = ?1 " +
-           "AND (?2 BETWEEN all_booking.start AND all_booking.end) " +
-           "ORDER BY all_booking.start DESC")
-    List<Booking> findAllByOwnerCurrentState(long userId, LocalDateTime currentTime);
+    @Query("""
+            SELECT all_booking
+            FROM Booking AS all_booking
+            WHERE all_booking.item.owner = :userId
+            AND (:currentTime BETWEEN all_booking.start AND all_booking.end)
+            ORDER BY all_booking.start DESC
+            """)
+    List<Booking> findAllByOwnerCurrentState(@Param("userId") long userId,
+                                             @Param("currentTime") LocalDateTime currentTime);
 
-    @Query("SELECT all_booking " +
-           "FROM Booking AS all_booking " +
-           "WHERE all_booking.item.owner = ?1 " +
-           "AND all_booking.end < ?2 " +
-           "ORDER BY all_booking.start DESC")
-    List<Booking> findAllByOwnerPastState(long userId, LocalDateTime currentTime);
+    @Query("""
+            SELECT all_booking
+            FROM Booking AS all_booking
+            WHERE all_booking.item.owner = :userId
+            AND all_booking.end < :currentTime
+            ORDER BY all_booking.start DESC
+            """)
+    List<Booking> findAllByOwnerPastState(@Param("userId") long userId,
+                                          @Param("currentTime") LocalDateTime currentTime);
 
-    @Query("SELECT all_booking " +
-           "FROM Booking AS all_booking " +
-           "WHERE all_booking.item.owner = ?1 " +
-           "AND all_booking.start > ?2 " +
-           "ORDER BY all_booking.start DESC")
-    List<Booking> findAllByOwnerFutureState(long userId, LocalDateTime currentTime);
+    @Query("""
+            SELECT all_booking
+            FROM Booking AS all_booking
+            WHERE all_booking.item.owner = :userId
+            AND all_booking.start > :currentTime
+            ORDER BY all_booking.start DESC
+            """)
+    List<Booking> findAllByOwnerFutureState(@Param("userId") long userId,
+                                            @Param("currentTime") LocalDateTime currentTime);
 
-    @Query("SELECT all_booking " +
-           "FROM Booking AS all_booking " +
-           "WHERE all_booking.item.owner = ?1 " +
-           "AND all_booking.status = ?2 " +
-           "ORDER BY all_booking.start DESC")
-    List<Booking> findAllByOwnerAndStatus(long userId, BookingState status);
+    @Query("""
+            SELECT all_booking
+            FROM Booking AS all_booking
+            WHERE all_booking.item.owner = :userId
+            AND all_booking.status = :status
+            ORDER BY all_booking.start DESC
+            """)
+    List<Booking> findAllByOwnerAndStatus(@Param("userId") long userId,
+                                          @Param("status") BookingState status);
 }
